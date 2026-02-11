@@ -1,10 +1,25 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 # --- Slot ---
+# class SlotCreate(BaseModel):
+#     code: str
+#     capacity: int = Field(..., gt=0)
+
 class SlotCreate(BaseModel):
     code: str
     capacity: int = Field(..., gt=0)
+
+    @field_validator("code")
+    @classmethod
+    def trim_slot_code(cls, v: str) -> str:
+        # 🔥 BUG 2 FIX: remove leading/trailing spaces
+        v = v.strip()
+
+        if not v:
+            raise ValueError("Slot code cannot be empty or spaces only")
+
+        return v
 
 
 class SlotResponse(BaseModel):
