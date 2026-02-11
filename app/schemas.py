@@ -21,21 +21,38 @@ class SlotCreate(BaseModel):
 
     #     return v
 
+    # code: str
+    # capacity: int = Field(..., gt=0, le=100)
+
+    # @field_validator("code")
+    # @classmethod
+    # def normalize_slot_code(cls, v: str) -> str:
+    #     # 🔥 Bug 2 fix: trim spaces
+    #     v = v.strip()
+
+    #     # 🔥 Bug 1 fix: make case-insensitive
+    #     v = v.upper()
+
+    #     if not v:
+    #         raise ValueError("Slot code cannot be empty")
+
+    #     return v
+
+
     code: str
-    capacity: int = Field(..., gt=0, le=100)
+    capacity: int = Field(
+        ...,
+        gt=0,
+        le=100,   # 🔥 BUG 3 FIX: upper limit
+        description="Slot capacity must be between 1 and 100"
+    )
 
     @field_validator("code")
     @classmethod
     def normalize_slot_code(cls, v: str) -> str:
-        # 🔥 Bug 2 fix: trim spaces
-        v = v.strip()
-
-        # 🔥 Bug 1 fix: make case-insensitive
-        v = v.upper()
-
+        v = v.strip().upper()
         if not v:
             raise ValueError("Slot code cannot be empty")
-
         return v
 
 
